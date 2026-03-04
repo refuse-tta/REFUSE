@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────
+# REFUSE – Default Configuration
+# ─────────────────────────────────────────────
+
+# Data
+data:
+  cifar10_dir: ./data                      # torchvision auto-download root
+  cifar10c_dir: ./data/CIFAR-10-C          # CIFAR-10-C numpy files
+  batch_size: 200
+  num_workers: 4
+
+# Model
+model:
+  arch: resnet26
+  num_classes: 10
+  checkpoint: checkpoints/resnet26_cifar10.pth
+
+# Training (source model)
+train:
+  epochs: 200
+  lr: 0.1
+  momentum: 0.9
+  weight_decay: 5.0e-4
+  scheduler: cosine
+
+# Test-Time Adaptation
+tta:
+  method: refuse           # refuse | tent | eata | sar | bn_adapt | buffer
+  lr: 1.0e-3
+  steps: 1                 # adaptation steps per batch
+  episodic: false          # reset model before each batch?
+
+# Corruptions to evaluate
+corruption:
+  types: all               # "all" or list, e.g. [gaussian_noise, fog]
+  severities: [5]          # list of severities to test
+
+# Analysis
+analysis:
+  cka: true
+  drift: true
+  adapted_checkpoints:
+    - checkpoints/adapted_refuse.pth
+    - checkpoints/adapted_tent.pth
+    - checkpoints/adapted_eata.pth
+    - checkpoints/adapted_sar.pth
+
+# Output
+output_dir: results/
